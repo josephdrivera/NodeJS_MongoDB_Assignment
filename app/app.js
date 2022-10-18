@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const mongoose = require('mongoose');
 const artistRoutes = require('../api/routes/artist');
 const albumRoutes = require('../api/routes/albums');
 
@@ -48,6 +49,15 @@ app.use((error, req, res, next) => {
         error: error.message,
         status: error.status
     });
+});
+
+// Connect to MongoDB
+mongoose.connect('process.env.MONGODB_URI', (err) => {
+    if (err) {
+        console.log('Error connecting to MongoDB');
+    } else {
+        console.log('Connected to MongoDB');
+    }
 });
 
 module.exports = app;
