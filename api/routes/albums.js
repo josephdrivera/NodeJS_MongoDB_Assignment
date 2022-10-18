@@ -51,10 +51,40 @@ routes.get('/:albumsid', (req, res, next) => {
 
 routes.patch('/:albumsid', (req, res, next) => {
     const albumsid = req.params.albumsid;
-    res.json({
-        message: 'PATCH request to /albums/',
-        id: albumsid
-    });
+    const updateOps = {
+        title: req.body.title,
+        artist: req.body.artist
+
+    };
+
+    Album.updateOne({
+        _id: albumsid
+    }, { $set: updateAlbum })
+        .then(result => {
+            console.log(result);
+            res.status(200).json({
+                message: 'Album Updated',
+                albums: {
+                    title: result.title,
+                    artist: result.artist,
+                    id: result._id,
+                    metadata: {
+                        method: req.method,
+                        host: req.hostname,
+                    }
+                }
+            })
+        }
+        )
+        .catch(err => {
+            console.log(err, message);
+            res.status(500).json({
+                error: {
+                    message: err.message
+                }
+            })
+        }
+        );
 });
 
 routes.delete('/:albumsid', (req, res, next) => {
