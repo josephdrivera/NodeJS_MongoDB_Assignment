@@ -1,8 +1,9 @@
 const express = require('express');
+require('dotenv').config();
 const app = express();
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const artistRoutes = require('../api/routes/artist');
+const artistRoutes = require('../api/routes/artists');
 const albumRoutes = require('../api/routes/albums');
 
 
@@ -52,9 +53,9 @@ app.use((error, req, res, next) => {
 });
 
 // Connect to MongoDB
-mongoose.connect('process.env.MONGODB_URI', (err) => {
+mongoose.connect(process.env.mongoDBURI, (err) => {
     if (err) {
-        console.log('Error connecting to MongoDB');
+        console.error("Error: ", err.message);
     } else {
         console.log('Connected to MongoDB');
     }
