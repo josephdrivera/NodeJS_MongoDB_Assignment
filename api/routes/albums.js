@@ -2,21 +2,18 @@ const express = require('express');
 const routes = express.Router();
 const Album = require('./models/album');
 const mongoose = require('mongoose');
+const { reset } = require('nodemon');
 
 // GET all albums
 routes.get('/', (req, res, next) => {
     Album.find()
-        .exec()
-        .then(docs => {
-            console.log(docs);
-            res.status(200).json(docs);
+        .then(result => {
+            res.json(result);
         })
         .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            });
-        });
+            res.json(err);
+        }
+        );
 });
 
 
@@ -58,23 +55,31 @@ routes.get('/:albumsid', (req, res, next) => {
     const albumsid = req.params.artistId;
     const id = req.params.albumId; // This is the id of the album
     Album.findById(id)
-        .then(doc => {
-            console.log(doc);
-            if (doc) {
-                res.status(200).json(doc);
-            } else {
-                res.status(404).json({
-                    message: 'No valid entry found for provided ID'
-                });
-            }
+        .then(result => {
+            console.log(result);
+            res.status(200).json({
+                message: 'Album Found',
+                albums: {
+                    title: result.title,
+                    artist: result.artist,
+                    id: result._id,
+                    metadata: {
+                        method: req.method,
+                        host: req.hostname,
+                    }
+                }
+            })
         })
         .catch(err => {
             console.log(err);
             res.status(500).json({
-                error: err
-            });
+                error: {
+                    message: err.message
+                }
+            })
         });
 });
+
 
 
 // PATCH album by id
