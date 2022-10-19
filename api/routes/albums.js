@@ -3,10 +3,22 @@ const routes = express.Router();
 const Album = require('./models/album');
 const mongoose = require('mongoose');
 
-
+// GET all albums
 routes.get('/', (req, res, next) => {
-    res.json({ message: 'GET request to /albums' });
+    Album.find()
+        .exec()
+        .then(docs => {
+            console.log(docs);
+            res.status(200).json(docs);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
 });
+
 
 routes.post('/', (req, res, next) => {
     const newAlbum = new Album({
@@ -41,22 +53,38 @@ routes.post('/', (req, res, next) => {
         });
 });
 
+// GET album by id
 routes.get('/:albumsid', (req, res, next) => {
     const albumsid = req.params.artistId;
-    res.json({
-        message: 'GET request to /albums/',
-        id: albumsid
-    });
+    const id = req.params.albumId; // This is the id of the album
+    Album.findById(id)
+        .then(doc => {
+            console.log(doc);
+            if (doc) {
+                res.status(200).json(doc);
+            } else {
+                res.status(404).json({
+                    message: 'No valid entry found for provided ID'
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
 });
 
+
+// PATCH album by id
 routes.patch('/:albumsid', (req, res, next) => {
     const albumsid = req.params.albumsid;
-    const updateOps = {
+    const updateAlbum = {
         title: req.body.title,
         artist: req.body.artist
 
     };
-
     Album.updateOne({
         _id: albumsid
     }, { $set: updateAlbum })
@@ -87,13 +115,34 @@ routes.patch('/:albumsid', (req, res, next) => {
         );
 });
 
+
+// DELETE album by id
 routes.delete('/:albumsid', (req, res, next) => {
     const albumsid = req.params.albumsid;
-    res.json({
-        message: 'DELETE request to /albums/',
-        id: albumsid
-    });
+    Album.remove({ _id: albumsid })
+        .then(result => {
+            res.status(200).json({
+                message: 'Album Deleted',
+                albums: {
+                    id: albumsid,
+                    metadata: {
+                        method: req.method,
+                        host: req.hostname,
+                    }
+                }
+            })
+        })
+        .catch(err => {
+            console.log(err, message);
+            res.status(500).json({
+                error: {
+                    message: err.message
+                }
+            })
+        });
 });
+
+
 
 
 
