@@ -1,3 +1,10 @@
+# 4.1 - Advanced Features (Validation and more)
+We are introducing advanced features in mongoose. 
+We will add validation to your schema.
+We will code for GET by using the find method in mongoose to find the book before we post.
+
+
+
 # NodeJS_MongoDB_Assignment Module 3 - Backend Database API
 
 In this assignment: 

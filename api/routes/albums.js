@@ -18,122 +18,138 @@ routes.get('/', (req, res, next) => {
 
 
 routes.post('/', (req, res, next) => {
-    const newAlbum = new Album({
-        _id: new mongoose.Types.ObjectId(),
+    Album.find({
         title: req.body.title,
-        artist: req.body.artist
-    });
-    // Save the new album to the database
-    newAlbum.save()
-        .then(result => {
-            console.log(result);
-            res.status(201).json({
-                message: 'Album Created',
-                albums: {
-                    title: result.title,
-                    artist: result.artist,
-                    id: result._id,
-                    metadata: {
-                        method: req.method,
-                        host: req.hostname,
-                    }
-                }
-            })
-        })
-        .catch(err => {
-            console.log(err, message);
-            res.status(500).json({
-                error: {
-                    message: err.message
-                }
-            })
-        });
-});
-
-// GET a single album by id
-routes.get('/:albumId', (req, res, next) => {
-    const albumId = req.params.albumId;
-    Album.findById(albumId)
-        .then(result => {
-            console.log(result);
-            res.json(result);
-        })
-        .catch(err => {
-            res.json(err);
-        }
-        );
-});
-
-
-
-// PATCH album by id
-routes.patch('/:albumsid', (req, res, next) => {
-    const albumid = req.params.albumid;
-
-    const updateAlbum = {
-        title: req.body.title,
-        artist: req.body.artist
-    };
-    Album.updateOne({
-        _id: albumid
-    }, {
-        $set: updateAlbum
+        artist: req.body.author
     })
+        .exec()
         .then(result => {
             console.log(result);
-            res.status(200).json({
-                message: 'Album Updated',
-                album: {
-                    title: result.title,
-                    artist: result.artist,
-                    id: result._id,
-                    metadata: {
-                        method: req.method,
-                        host: req.hostname,
-                    }
-                }
-            })
+            if (result.length >= 0) {
+                return res.status(406).json({
+                    message: 'Album already exists'
+                })
+            }
+            const newAlbum = new Album({
+                _id: new mongoose.Types.ObjectId(),
+                title: req.body.title,
+                artist: req.body.artist
+            });
+            // Save the new album to the database
+            newAlbum.save()
+                .then(result => {
+                    console.log(result);
+                    res.status(201).json({
+                        message: 'Album Created',
+                        albums: {
+                            title: result.title,
+                            artist: result.artist,
+                            id: result._id,
+                            metadata: {
+                                method: req.method,
+                                host: req.hostname,
+                            }
+                        }
+                    })
+                })
+                .catch(err => {
+                    console.log(err, message);
+                    res.status(500).json({
+                        error: {
+                            message: "Error creating album" + req.body.title
+                        }
+                    })
+                })
         })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: {
-                    message: err.message
-                }
-            })
-        });
-});
 
-// DELETE album by id
-routes.delete('/:albumid', (req, res, next) => {
-    const albumid = req.params.albumid;
-    Album.remove({ _id: albumid })
-        .then(result => {
-            console.log(result);
-            res.status(200).json({
-                message: 'Album Deleted',
-                albums: {
-                    title: result.title,
-                    artist: result.artist,
-                    id: result._id,
-                    metadata: {
-                        method: req.method,
-                        host: req.hostname,
-                    }
-                }
+
+
+    // GET a single album by id
+    routes.get('/:albumId', (req, res, next) => {
+        const albumId = req.params.albumId;
+        Album.findById(albumId)
+            .then(result => {
+                console.log(result);
+                res.json(result);
             })
+            .catch(err => {
+                res.json(err);
+            }
+            );
+    });
+
+
+
+    // PATCH album by id
+    routes.patch('/:albumsid', (req, res, next) => {
+        const albumid = req.params.albumid;
+
+        const updateAlbum = {
+            title: req.body.title,
+            artist: req.body.artist
+        };
+        Album.updateOne({
+            _id: albumid
+        }, {
+            $set: updateAlbum
         })
-        .catch(err => {
-            console.log(err, message);
-            res.status(500).json({
-                error: {
-                    message: err.message
-                }
+            .then(result => {
+                console.log(result);
+                res.status(200).json({
+                    message: 'Album Updated',
+                    album: {
+                        title: result.title,
+                        artist: result.artist,
+                        id: result._id,
+                        metadata: {
+                            method: req.method,
+                            host: req.hostname,
+                        }
+                    }
+                })
             })
-        });
-});
+            .catch(err => {
+                console.log(err, message);
+                res.status(500).json({
+                    error: {
+                        message: "Error updating album" + req.body.title
+                    }
+                })
+            })
+    });
 
+
+    // DELETE album by id
+    routes.delete('/:albumid', (req, res, next) => {
+        const albumid = req.params.albumid;
+        Album.remove({ _id: albumid })
+            .then(result => {
+                console.log(result);
+                res.status(200).json({
+                    message: 'Album Deleted',
+                    albums: {
+                        title: result.title,
+                        artist: result.artist,
+                        id: result._id,
+                        metadata: {
+                            method: req.method,
+                            host: req.hostname,
+                        }
+                    }
+                })
+            })
+            .catch(err => {
+                console.log(err, message);
+                res.status(500).json({
+                    error: {
+                        message: err.message
+                    }
+                })
+            });
+    });
+});
 
 
 
 module.exports = routes;
+

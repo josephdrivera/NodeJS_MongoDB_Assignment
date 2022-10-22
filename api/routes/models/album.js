@@ -10,8 +10,6 @@ const albumSchema = mongoose.Schema({
     artist: {
         type: String,
         required: true,
-        default: 'Unknown'
-
     }
 });
 

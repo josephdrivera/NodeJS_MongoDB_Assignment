@@ -4,6 +4,7 @@ const app = express();
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const artistRoutes = require('../api/routes/artists');
+
 const albumRoutes = require('../api/routes/albums');
 
 
