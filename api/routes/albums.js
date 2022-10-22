@@ -69,6 +69,7 @@ routes.get('/:albumId', (req, res, next) => {
 // PATCH album by id
 routes.patch('/:albumsid', (req, res, next) => {
     const albumid = req.params.albumid;
+
     const updateAlbum = {
         title: req.body.title,
         artist: req.body.artist
@@ -82,7 +83,7 @@ routes.patch('/:albumsid', (req, res, next) => {
             console.log(result);
             res.status(200).json({
                 message: 'Album Updated',
-                albums: {
+                album: {
                     title: result.title,
                     artist: result.artist,
                     id: result._id,
