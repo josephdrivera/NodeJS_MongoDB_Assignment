@@ -1,3 +1,16 @@
+# 4.4 - Second Collections Assignment
+You will finish your second collection (Model).
+You will need to:
+
+Use select() to exclude info like version
+Use populate to display your first collection (model) in your second model
+In all the (id) functions check to see if the object is in the database first, if so, then display "object" not found, like in the examples. (GET by ID, etc.)
+Put your hardcoded messages in a Messages module
+When posting your second collection use the id from the first collection, (found in MongoDB)
+Use Postman to view ALL your function payloads
+
+
+
 # 4.2 - Delete By Id and Get By Id
 We are going to develop our next collection, the authors collection.
 We will code for delete by Id.
