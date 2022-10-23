@@ -1,3 +1,9 @@
+# 4.2 - Delete By Id and Get By Id
+We are going to develop our next collection, the authors collection.
+We will code for delete by Id.
+We will code for Get by Id.
+
+
 # 4.1 - Advanced Features (Validation and more)
 We are introducing advanced features in mongoose. 
 We will add validation to your schema.
